@@ -4,14 +4,16 @@ const Var = buildStruct('name', 'value');
 
 const Program = buildStruct('type', 'body');
 const Function = buildStruct('type', 'params', 'body');
-const If = buildStruct('type', 'test', 'then', 'else');
+const If = buildStruct('type', 'test', 'than', 'else');
 const Call = buildStruct('type', 'callee', 'args');
 const Assignment = buildStruct('type', 'left', 'op', 'right');
 const Return = buildStruct('type', 'argument');
 const While = buildStruct('type', 'test', 'body');
 const Let = buildStruct('type', 'name', 'init');
 
+const Block = buildStruct('number', 'lines', 'color', 'shape', 'arrows');
+
 const Line = buildStruct('string', 'color', 'tabs');
 
 
-export {Var, Program, Function, If, Call, Assignment, Return, While, Line, Let};
+export {Var, Program, Function, If, Call, Assignment, Return, While, Line, Let, Block};

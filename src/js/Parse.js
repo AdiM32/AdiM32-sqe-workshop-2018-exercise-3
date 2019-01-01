@@ -1,6 +1,6 @@
 import {Var, Function, Program, Let, If, Assignment, Return, While, Call} from './Structs';
 
-let input_vector = {};
+let intput_vector = {};
 
 // noinspection JSAnnotator
 const type_func = {'Program': (pc) => Program('Program', parseBody(pc.body)),
@@ -29,7 +29,15 @@ function parse(parsecode) {
 
 function parseBody(body) {
     let _body = [];
-    body.forEach((b) => _body.push(parse(b)));
+    body.forEach((b) => {
+        let _b = parse(b);
+        if(_b !== null){
+            if(Array.isArray(_b) && _b[0].type === 'Let'){
+                _b.forEach((e) => _body.push(e));
+            }
+            else
+                _body.push(_b);
+        }});
     return _body;
 }
 
@@ -38,8 +46,8 @@ function parseFunctionDeclaration(name, params, body){
     params.forEach((p) => {_params.push(p.name);});
     let _body = parse(body);
     let func = Function('Function', _params, _body);
-    input_vector.push(Var(name, func));
-    return func;
+    intput_vector.push(Var(name, func));
+    return null;
 }
 
 function parseVariableDeclaration(declarations) {
@@ -95,20 +103,20 @@ function parseWhileStatement(test, body) {
 }
 
 function clearInputVectot() {
-    input_vector = [];
+    intput_vector = [];
 }
 
 function getInputVector() {
-    return input_vector;
+    return intput_vector;
 }
 
 function parseCallExpression(callee, args) {
     let _args = [];
     args.forEach((arg) => _args.push(parseOneSide(arg)));
-    for (let i = 0; i<input_vector.length; i++){
-        if (input_vector[i].name === callee){
-            if (input_vector[i].value.type === 'Function') {
-                insertToIV((input_vector[i].value.params), _args);
+    for (let i = 0; i<intput_vector.length; i++){
+        if (intput_vector[i].name === callee){
+            if (intput_vector[i].value.type === 'Function') {
+                insertToIV((intput_vector[i].value.params), _args);
                 break;
             }
         }
@@ -118,7 +126,7 @@ function parseCallExpression(callee, args) {
 
 function insertToIV(params, args) {
     for (let i = 0; i<params.length; i++){
-        input_vector.push(Var(params[i], args[i], false));
+        intput_vector.push(Var(params[i], args[i], false));
     }
 }
 
