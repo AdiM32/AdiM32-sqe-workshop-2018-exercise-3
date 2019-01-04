@@ -13,13 +13,15 @@ const type_func = {'Program': (pc) => Program('Program', parseBody(pc.body)),
     'ExpressionStatement': (pc) => parse(pc.expression),
     'AssignmentExpression': (pc) => parseAssignmentExpression(pc.left, pc.operator, pc.right),
     'ReturnStatement': (pc) => parseReturnStatement(pc.argument),
-    'WhileStatement': (pc) => parseWhileStatement(pc.test, pc.body)};
+    'WhileStatement': (pc) => parseWhileStatement(pc.test, pc.body),
+    'UpdateExpression': (s) => Assignment('Assignment', s.argument.name, '+', s.argument.name + ' + 1')};
 
 const sideType_func = {'Identifier': (s) => s.name,
     'Literal': (s) => {return s.value;},
     'BinaryExpression': (s) => {return '(' + parseBinaryExpression(s) + ')';},
     'MemberExpression': (s) => {return s.object.name + '[' + parseOneSide(s.property) + ']';},
-    'ArrayExpression': (s) => parseArrayExpression(s.elements)};
+    'ArrayExpression': (s) => parseArrayExpression(s.elements),
+    'UpdateExpression': (s) => {return s.argument.name + s.operator;}};
 
 function parse(parsecode) {
     if (parsecode.type in type_func) {

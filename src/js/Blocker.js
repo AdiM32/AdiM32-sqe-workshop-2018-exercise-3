@@ -4,15 +4,17 @@ let block_number = 1;
 let blocks = [];
 let intput_vector = [];
 
-const type_func = {'Program': (p) => makeBlockBody(p.body),
+const type_func = {'Program': (p) => p.body.forEach((b) => makeBlock(b)),
     'Call': (c) => makeBlockCall(c.callee),
     'Function': (f) => makeBlockFunction(f.body),
     'If': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
     'ElseIf': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
+    'While': (_while) => makeBlockWhile(_while.test, _while.body),
     'Assignment': (a) => createBlock([a.left + ' ' + a.op + ' ' + a.right], 'square', null)};
 
 const makeLine = {'Let': (l) => l.name + ' = ' + l.init,
-    'Return': (r) => 'return ' + r.argument};
+    'Return': (r) => 'return ' + r.argument,
+    'Assignment': (a) => a.left + ' ' + a.op + ' ' + a.right};
 
 function clearBlocker() {
     block_number = 1;
@@ -25,8 +27,20 @@ function makeBlock(program) {
         type_func[program.type](program);
 }
 
-function makeBlockBody(body) {
-    body.forEach((b) => makeBlock(b));
+function makeBlockBody(body, end_point) {
+    let lines = [];
+    for (let i=0; i<body.length; i++){
+        if (body[i].type !== 'If' && body[i].type !== 'While')
+            lines.push(makeLine[body[i].type](body[i]));
+        else{
+            createBlock(lines, 'square', [block_number+1]);
+            lines = [];
+            makeBlock(body[i]);
+        }
+    }
+    if (lines !== []){
+        createBlock(lines, 'square', [end_point]);
+    }
 }
 
 function makeBlockCall(callee) {
@@ -41,27 +55,27 @@ function makeBlockCall(callee) {
 }
 
 function makeBlockFunction(body) {
-    let lines = [];
-    for (let i=0; i<body.length; i++){
-        if (body[i].type !== 'If')
-            lines.push(makeLine[body[i].type](body[i]));
-        else{
-            createBlock(lines, 'square', [block_number+1]);
-            lines = [];
-            makeBlock(body[i]);
-        }
-    }
-    if (lines !== []){
-        createBlock(lines, 'square', ['END']);
-    }
+    makeBlockBody(body, 'END');
+}
+
+function makeBlockWhile(test, body){
+    let nullBlock = block_number;
+    createBlock(['Null'], 'square', [block_number+1]);
+    let testBlock = block_number;
+    createBlock([test], 'diamond', [['T', block_number+1], ['F', null]]);
+    makeBlockBody(body, nullBlock);
+    blocks.forEach((block) => {if (block.number === testBlock) {block.arrows[1][1] = block_number;}});
 }
 
 function makeBlockIf(type, test, than, _else) {
+    let testBlock = block_number;
     createBlock([test], 'diamond', [['T', block_number+1], ['F', block_number+than.length+1]]);
-    makeBlockBody(than);
+    makeBlockBody(than, null);
+    blocks.forEach((block) => {if (block.number === testBlock) {block.arrows[1][1] = block_number;}});
     if (_else !== null)
-        if (Array.isArray(_else))
-            makeBlockBody(_else);
+        if (Array.isArray(_else)){
+            makeBlockBody(_else, null);
+        }
         else
             makeBlock(_else);
     if (type === 'If'){
@@ -72,7 +86,7 @@ function makeBlockIf(type, test, than, _else) {
 
 function updateMergePoint() {
     for(let i=0; i<blocks.length; i++)
-        if (blocks[i].arrows === null)
+        if (blocks[i].arrows === null || blocks[i].arrows[0] === null)
             blocks[i].arrows = [block_number];
 }
 
