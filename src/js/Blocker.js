@@ -9,7 +9,10 @@ const type_func = {'Program': (p) => makeBlockBody(p.body),
     'Function': (f) => makeBlockFunction(f.body),
     'If': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
     'ElseIf': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
-    'Assignment': (a) => createBlock([a], 'square', null)};
+    'Assignment': (a) => createBlock([a.left + ' ' + a.op + ' ' + a.right], 'square', null)};
+
+const makeLine = {'Let': (l) => l.name + ' = ' + l.init,
+    'Return': (r) => 'return ' + r.argument};
 
 function clearBlocker() {
     block_number = 1;
@@ -41,7 +44,7 @@ function makeBlockFunction(body) {
     let lines = [];
     for (let i=0; i<body.length; i++){
         if (body[i].type !== 'If')
-            lines.push(body[i]);
+            lines.push(makeLine[body[i].type](body[i]));
         else{
             createBlock(lines, 'square', [block_number+1]);
             lines = [];
@@ -63,7 +66,7 @@ function makeBlockIf(type, test, than, _else) {
             makeBlock(_else);
     if (type === 'If'){
         updateMergePoint();
-        createBlock([], 'circle', [block_number+1]);
+        createBlock([], 'oval', [block_number+1]);
     }
 }
 
@@ -74,7 +77,7 @@ function updateMergePoint() {
 }
 
 function createBlock(lines, shape, arrows) {
-    blocks.push(Block(block_number, lines, 'white', shape, arrows));
+    blocks.push(Block(block_number, lines, 'black', shape, arrows));
     block_number++;
 }
 
