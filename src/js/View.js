@@ -37,9 +37,4 @@ function makeArrow(from, to) {
     return from + '->' + to + ';\n';
 }
 
-function clearView() {
-    let view = document.getElementById('color_CFG');
-    view.innerHTML = '';
-}
-
-export {buildView, clearView};
+export {buildView};

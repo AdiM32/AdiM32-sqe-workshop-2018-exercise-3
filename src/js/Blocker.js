@@ -2,15 +2,15 @@ import {Block} from './Structs';
 
 let block_number = 1;
 let blocks = [];
-let intput_vector = [];
+let input_vector = [];
 
 const type_func = {'Program': (p) => p.body.forEach((b) => makeBlock(b)),
     'Call': (c) => makeBlockCall(c.callee),
     'Function': (f) => makeBlockFunction(f.body),
     'If': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
     'ElseIf': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
-    'While': (_while) => makeBlockWhile(_while.test, _while.body),
-    'Assignment': (a) => createBlock([a.left + ' ' + a.op + ' ' + a.right], 'square', null)};
+    'While': (_while) => makeBlockWhile(_while.test, _while.body)};
+    // 'Assignment': (a) => createBlock([a.left + ' ' + a.op + ' ' + a.right], 'square', null)};
 
 const makeLine = {'Let': (l) => l.name + ' = ' + l.init,
     'Return': (r) => 'return ' + r.argument,
@@ -19,12 +19,11 @@ const makeLine = {'Let': (l) => l.name + ' = ' + l.init,
 function clearBlocker() {
     block_number = 1;
     blocks = [];
-    intput_vector = [];
+    input_vector = [];
 }
 
 function makeBlock(program) {
-    if (program.type in type_func)
-        type_func[program.type](program);
+    type_func[program.type](program);
 }
 
 function makeBlockBody(body, end_point) {
@@ -38,18 +37,14 @@ function makeBlockBody(body, end_point) {
             makeBlock(body[i]);
         }
     }
-    if (lines !== []){
-        createBlock(lines, 'square', [end_point]);
-    }
+    createBlock(lines, 'square', [end_point]);
 }
 
 function makeBlockCall(callee) {
-    for (let i = 0; i<intput_vector.length; i++){
-        if (intput_vector[i].name === callee){
-            if (intput_vector[i].value.type === 'Function') {
-                makeBlock(intput_vector[i].value);
-                break;
-            }
+    for (let i = input_vector.length - 1; i>=0; i--){
+        if (input_vector[i].name === callee && input_vector[i].value.type === 'Function'){
+            makeBlock(input_vector[i].value);
+            break;
         }
     }
 }
@@ -100,7 +95,7 @@ function getBlocks() {
 }
 
 function initIV(iv) {
-    intput_vector = iv;
+    input_vector = iv;
 }
 
 export {makeBlock, clearBlocker, getBlocks, initIV};

@@ -1,6 +1,6 @@
 import {Var, Function, Program, Let, If, Assignment, Return, While, Call} from './Structs';
 
-let intput_vector = {};
+let intput_vector = [];
 
 // noinspection JSAnnotator
 const type_func = {'Program': (pc) => Program('Program', parseBody(pc.body)),

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import {parseCode} from './code-analyzer';
-import {clearView, buildView} from './View';
+import {buildView} from './View';
 import {getInputVector, clearInputVectot, parse} from './Parse';
 import {clearBlocker, makeBlock, getBlocks, initIV} from './Blocker';
 import {colorBlocks, clearColorBlocks, getColorBlocks} from './Color.js';
@@ -23,13 +23,12 @@ $(document).ready(function () {
                 $('#color_CFG').find('*').remove();
                 $('#color_CFG').append(element);
             });
-        $('#parsedCode').val(JSON.stringify(program, null, 2));
+        $('#parsedCode').val(JSON.stringify(blocks, null, 2));
     });
 });
 
 function clearAll() {
     clearInputVectot();
-    clearView();
     clearBlocker();
     clearColorBlocks();
 }
