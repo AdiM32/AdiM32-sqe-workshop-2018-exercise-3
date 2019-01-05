@@ -29,7 +29,7 @@ function runOnGraphFrom(block_number) {
 
 function findNextBlock(block) {
     let res = evaluateTest(block.lines[0], input_vector);
-    let true_arrow = block.arrows[0][0] === 'T'? 0 : 1;
+    let true_arrow = 0;
     if (res)
         runOnGraphFrom(block.arrows[true_arrow][1]);
     else
@@ -38,8 +38,7 @@ function findNextBlock(block) {
 
 function UpdateIV(lines) {
     lines.forEach((l) => {
-        if (l.type === 'Let')
-            input_vector.push(Var(l.name, l.init));
+        input_vector.push(Var(l.name, l.init));
     });
 }
 

@@ -1,6 +1,6 @@
 import {Var, Function, Program, Let, If, Assignment, Return, While, Call} from './Structs';
 
-let intput_vector = [];
+let input_vector = [];
 
 // noinspection JSAnnotator
 const type_func = {'Program': (pc) => Program('Program', parseBody(pc.body)),
@@ -14,19 +14,17 @@ const type_func = {'Program': (pc) => Program('Program', parseBody(pc.body)),
     'AssignmentExpression': (pc) => parseAssignmentExpression(pc.left, pc.operator, pc.right),
     'ReturnStatement': (pc) => parseReturnStatement(pc.argument),
     'WhileStatement': (pc) => parseWhileStatement(pc.test, pc.body),
-    'UpdateExpression': (s) => Assignment('Assignment', s.argument.name, '+', s.argument.name + ' + 1')};
+    'UpdateExpression': (s) => Assignment('Assignment', s.argument.name, '=', s.argument.name + ' + 1')};
 
 const sideType_func = {'Identifier': (s) => s.name,
     'Literal': (s) => {return s.value;},
     'BinaryExpression': (s) => {return '(' + parseBinaryExpression(s) + ')';},
     'MemberExpression': (s) => {return s.object.name + '[' + parseOneSide(s.property) + ']';},
     'ArrayExpression': (s) => parseArrayExpression(s.elements),
-    'UpdateExpression': (s) => {return s.argument.name + s.operator;}};
+    'UnaryExpression': (s) =>  {return s.operator + parseOneSide(s.argument);}};
 
 function parse(parsecode) {
-    if (parsecode.type in type_func) {
-        return type_func[parsecode.type](parsecode);
-    }
+    return type_func[parsecode.type](parsecode);
 }
 
 function parseBody(body) {
@@ -48,7 +46,7 @@ function parseFunctionDeclaration(name, params, body){
     params.forEach((p) => {_params.push(p.name);});
     let _body = parse(body);
     let func = Function('Function', _params, _body);
-    intput_vector.push(Var(name, func));
+    input_vector.push(Var(name, func));
     return null;
 }
 
@@ -105,22 +103,19 @@ function parseWhileStatement(test, body) {
 }
 
 function clearInputVectot() {
-    intput_vector = [];
+    input_vector = [];
 }
 
 function getInputVector() {
-    return intput_vector;
+    return input_vector;
 }
 
 function parseCallExpression(callee, args) {
     let _args = [];
     args.forEach((arg) => _args.push(parseOneSide(arg)));
-    for (let i = 0; i<intput_vector.length; i++){
-        if (intput_vector[i].name === callee){
-            if (intput_vector[i].value.type === 'Function') {
-                insertToIV((intput_vector[i].value.params), _args);
-                break;
-            }
+    for (let i = 0; i<input_vector.length; i++){
+        if (input_vector[i].name === callee && input_vector[i].value.type === 'Function'){
+            insertToIV((input_vector[i].value.params), _args);
         }
     }
     return Call('Call', callee, _args);
@@ -128,7 +123,7 @@ function parseCallExpression(callee, args) {
 
 function insertToIV(params, args) {
     for (let i = 0; i<params.length; i++){
-        intput_vector.push(Var(params[i], args[i], false));
+        input_vector.push(Var(params[i], args[i], false));
     }
 }
 
