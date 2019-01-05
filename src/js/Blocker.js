@@ -10,7 +10,6 @@ const type_func = {'Program': (p) => p.body.forEach((b) => makeBlock(b)),
     'If': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
     'ElseIf': (_if) => makeBlockIf(_if.type, _if.test, _if.than, _if.else),
     'While': (_while) => makeBlockWhile(_while.test, _while.body)};
-    // 'Assignment': (a) => createBlock([a.left + ' ' + a.op + ' ' + a.right], 'square', null)};
 
 const makeLine = {'Let': (l) => l.name + ' = ' + l.init,
     'Return': (r) => 'return ' + r.argument,

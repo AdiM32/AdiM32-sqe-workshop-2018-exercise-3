@@ -25,10 +25,17 @@ function makeLabel(lines) {
 function buildBlockView(block) {
     let block_arrows = '';
     block.arrows.forEach((arrow) => {
-        Array.isArray(arrow)? block_arrows += makeArrow(block.number, arrow[1]):
+        Array.isArray(arrow)? block_arrows += makeArrowWithLabel(block.number, arrow[1], arrow[0]):
             block_arrows += makeArrow(block.number, arrow);
     });
     return block_arrows;
+}
+
+function makeArrowWithLabel(from, to, label) {
+    let res = makeArrow(from, to);
+    res = res.substr(0, res.length-2);
+    res += '[label=' + label + '];';
+    return res;
 }
 
 function makeArrow(from, to) {
@@ -36,5 +43,4 @@ function makeArrow(from, to) {
         return '';
     return from + '->' + to + ';\n';
 }
-
 export {buildView};
