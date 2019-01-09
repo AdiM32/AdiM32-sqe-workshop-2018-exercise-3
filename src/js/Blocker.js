@@ -31,8 +31,10 @@ function makeBlockBody(body, end_point) {
         if (body[i].type !== 'If' && body[i].type !== 'While')
             lines.push(makeLine[body[i].type](body[i]));
         else{
-            createBlock(lines, 'square', [block_number+1]);
-            lines = [];
+            if (lines.length > 0) {
+                createBlock(lines, 'square', [block_number + 1]);
+                lines = [];
+            }
             makeBlock(body[i]);
         }
     }

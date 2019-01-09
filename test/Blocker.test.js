@@ -27,17 +27,14 @@ describe('make block test: assignment examples', () => {
         test_Struct('function foo(x, y, z){\nlet a = x + 1;\nlet b = a + y;\nlet c = 0;\n\nif (b < z) {\nc = c + 5;\n} else if (b < z * 2) {\nc = c + x + 5;\n} else {\nc = c + z + 5;\n}\n\nreturn c;\n}\nfoo(1, 2 ,3)',
             [{'number': 1,'lines': ['a = (x + 1)','b = (a + y)','c = 0'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['b < z'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['c = (c + 5)'],'color': 'black','shape': 'square','arrows': [7]},{'number': 4,'lines': ['b < (z * 2)'],'color': 'green','shape': 'diamond','arrows': [['T',5],['F',6]]},{'number': 5,'lines': ['c = ((c + x) + 5)'],'color': 'black','shape': 'square','arrows': [7]},{'number': 6,'lines': ['c = ((c + z) + 5)'],'color': 'green','shape': 'square','arrows': [7]},{'number': 7,'lines': [],'color': 'green','shape': 'oval','arrows': [8]},{'number': 8,'lines': ['return c'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
-
     it('should make CFG from first example with more lines', () => {
         test_Struct('function foo(x, y, z){let a = x + 1;let b = a + y;let c = 0;if (b < z) {c = c + 5;c = c + 5;} else if (b < z * 2) {c = c + x + 5;c = c + x + 5;} else {c = c + z + 5;c = c + z + 5;}return c;}foo(1, 2 ,3)',
             [{'number': 1,'lines': ['a = (x + 1)','b = (a + y)','c = 0'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['b < z'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['c = (c + 5)','c = (c + 5)'],'color': 'black','shape': 'square','arrows': [7]},{'number': 4,'lines': ['b < (z * 2)'],'color': 'green','shape': 'diamond','arrows': [['T',5],['F',6]]},{'number': 5,'lines': ['c = ((c + x) + 5)','c = ((c + x) + 5)'],'color': 'black','shape': 'square','arrows': [7]},{'number': 6,'lines': ['c = ((c + z) + 5)','c = ((c + z) + 5)'],'color': 'green','shape': 'square','arrows': [7]},{'number': 7,'lines': [],'color': 'green','shape': 'oval','arrows': [8]},{'number': 8,'lines': ['return c'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
-
     it('should make CFG from second example', () => {
         test_Struct('function foo(x, y, z){let a = x + 1;let b = a + y;let c = 0;while (a < z) {c = a + b;z = c * 2;a++;}return z;}foo(1, 2 ,3)',
             [{'number': 1,'lines': ['a = (x + 1)','b = (a + y)','c = 0'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['Null'],'color': 'green','shape': 'square','arrows': [3]},{'number': 3,'lines': ['a < z'],'color': 'green','shape': 'diamond','arrows': [['T',4],['F',5]]},{'number': 4,'lines': ['c = (a + b)','z = (c * 2)','a = a + 1'],'color': 'black','shape': 'square','arrows': [2]},{'number': 5,'lines': ['return z'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
-
     it('should make CFG from second example with more lines', () => {
         test_Struct('function foo(x, y, z){let a = x + 1;let b = a + y;let c = 0;let str = \'\';while (a < z) {c = a + b;z = c * 2;str += \'!\';a++;}return z;}foo(1, 2 ,3)',
             [{'number': 1,'lines': ['a = (x + 1)','b = (a + y)','c = 0','str = '],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['Null'],'color': 'green','shape': 'square','arrows': [3]},{'number': 3,'lines': ['a < z'],'color': 'green','shape': 'diamond','arrows': [['T',4],['F',5]]},{'number': 4,'lines': ['c = (a + b)','z = (c * 2)','str += !','a = a + 1'],'color': 'black','shape': 'square','arrows': [2]},{'number': 5,'lines': ['return z'],'color': 'green','shape': 'square','arrows': ['END']}]);
@@ -52,19 +49,19 @@ describe('make block test: arrays', () => {
 
     it('eval array with UnaryExpression', () => {
         test_Struct('function foo(x, y, z){if(x[0] > 0) {y = y + z;}return z;}foo([-1], 2 ,3)',
-            [{'number': 1,'lines': [],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['x[0] > 0'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['y = (y + z)'],'color': 'black','shape': 'square','arrows': [4]},{'number': 4,'lines': [],'color': 'green','shape': 'oval','arrows': [5]},{'number': 5,'lines': ['return z'],'color': 'green','shape': 'square','arrows': ['END']}]);
+            [{'number': 1,'lines': ['x[0] > 0'],'color': 'green','shape': 'diamond','arrows': [['T',2],['F',3]]},{'number': 2,'lines': ['y = (y + z)'],'color': 'black','shape': 'square','arrows': [3]},{'number': 3,'lines': [],'color': 'green','shape': 'oval','arrows': [4]},{'number': 4,'lines': ['return z'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
 });
 
 describe('make block test: long var name', () => {
     it('should eval long var name', () => {
         test_Struct('function foo(x, y, z){let long_var_name = 17;if(x[0] < 0) {y = y + z;}if (long_var_name > 20){z = y;}z++;return z + long_var_name;}foo([-1], 2 ,3)',
-            [{'number': 1,'lines': ['long_var_name = 17'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['x[0] < 0'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['y = (y + z)'],'color': 'green','shape': 'square','arrows': [4]},{'number': 4,'lines': [],'color': 'green','shape': 'oval','arrows': [5]},{'number': 5,'lines': [],'color': 'green','shape': 'square','arrows': [6]},{'number': 6,'lines': ['long_var_name > 20'],'color': 'green','shape': 'diamond','arrows': [['T',7],['F',8]]},{'number': 7,'lines': ['z = y'],'color': 'black','shape': 'square','arrows': [8]},{'number': 8,'lines': [],'color': 'green','shape': 'oval','arrows': [9]},{'number': 9,'lines': ['z = z + 1','return (z + long_var_name)'],'color': 'green','shape': 'square','arrows': ['END']}]);
+            [{'number': 1,'lines': ['long_var_name = 17'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['x[0] < 0'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['y = (y + z)'],'color': 'green','shape': 'square','arrows': [4]},{'number': 4,'lines': [],'color': 'green','shape': 'oval','arrows': [5]},{'number': 5,'lines': ['long_var_name > 20'],'color': 'green','shape': 'diamond','arrows': [['T',6],['F',7]]},{'number': 6,'lines': ['z = y'],'color': 'black','shape': 'square','arrows': [7]},{'number': 7,'lines': [],'color': 'green','shape': 'oval','arrows': [8]},{'number': 8,'lines': ['z = z + 1','return (z + long_var_name)'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
 
     it('should parse long var name without init in the deceleration', () => {
         test_Struct('function foo(x, y, z){let long_var_name;long_var_name = 17;if(x[0] < 0) {y = y + z;}if (long_var_name > 20){z = y;}z++;return z + long_var_name;}foo([-1], 2 ,3)',
-            [{'number': 1,'lines': ['long_var_name = null','long_var_name = 17'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['x[0] < 0'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['y = (y + z)'],'color': 'green','shape': 'square','arrows': [4]},{'number': 4,'lines': [],'color': 'green','shape': 'oval','arrows': [5]},{'number': 5,'lines': [],'color': 'green','shape': 'square','arrows': [6]},{'number': 6,'lines': ['long_var_name > 20'],'color': 'green','shape': 'diamond','arrows': [['T',7],['F',8]]},{'number': 7,'lines': ['z = y'],'color': 'black','shape': 'square','arrows': [8]},{'number': 8,'lines': [],'color': 'green','shape': 'oval','arrows': [9]},{'number': 9,'lines': ['z = z + 1','return (z + long_var_name)'],'color': 'green','shape': 'square','arrows': ['END']}]);
+            [{'number': 1,'lines': ['long_var_name = null','long_var_name = 17'],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['x[0] < 0'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['y = (y + z)'],'color': 'green','shape': 'square','arrows': [4]},{'number': 4,'lines': [],'color': 'green','shape': 'oval','arrows': [5]},{'number': 5,'lines': ['long_var_name > 20'],'color': 'green','shape': 'diamond','arrows': [['T',6],['F',7]]},{'number': 6,'lines': ['z = y'],'color': 'black','shape': 'square','arrows': [7]},{'number': 7,'lines': [],'color': 'green','shape': 'oval','arrows': [8]},{'number': 8,'lines': ['z = z + 1','return (z + long_var_name)'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
 });
 
@@ -76,6 +73,6 @@ describe('make block test: other', () => {
 
     it('should pare UpdateExpression', () => {
         test_Struct('function foo(x, y, z){if(x[0] < 0) {y = y + z;}z++;return z;}foo([-1], 2 ,3)',
-            [{'number': 1,'lines': [],'color': 'green','shape': 'square','arrows': [2]},{'number': 2,'lines': ['x[0] < 0'],'color': 'green','shape': 'diamond','arrows': [['T',3],['F',4]]},{'number': 3,'lines': ['y = (y + z)'],'color': 'green','shape': 'square','arrows': [4]},{'number': 4,'lines': [],'color': 'green','shape': 'oval','arrows': [5]},{'number': 5,'lines': ['z = z + 1','return z'],'color': 'green','shape': 'square','arrows': ['END']}]);
+            [{'number': 1,'lines': ['x[0] < 0'],'color': 'green','shape': 'diamond','arrows': [['T',2],['F',3]]},{'number': 2,'lines': ['y = (y + z)'],'color': 'green','shape': 'square','arrows': [3]},{'number': 3,'lines': [],'color': 'green','shape': 'oval','arrows': [4]},{'number': 4,'lines': ['z = z + 1','return z'],'color': 'green','shape': 'square','arrows': ['END']}]);
     });
 });
